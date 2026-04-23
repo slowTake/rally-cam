@@ -8,18 +8,26 @@ import { useEffect, useState } from "react";
 export function useLandscapeLock() {
   const [isPortrait, setIsPortrait] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
+    const isTouch = window.matchMedia("(pointer: coarse)").matches;
+    if (!isTouch) return false;
     return window.matchMedia("(orientation: portrait)").matches;
   });
 
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const mql = window.matchMedia("(orientation: portrait)");
-    const onChange = (e: MediaQueryListEvent) => setIsPortrait(e.matches);
-    setIsPortrait(mql.matches);
-    mql.addEventListener?.("change", onChange);
+    const touchMql = window.matchMedia("(pointer: coarse)");
+    const orientationMql = window.matchMedia("(orientation: portrait)");
 
-    // Best-effort orientation lock. Silently ignored on unsupported browsers.
+    const update = () => {
+      setIsPortrait(touchMql.matches && orientationMql.matches);
+    };
+
+    update();
+    orientationMql.addEventListener?.("change", update);
+    touchMql.addEventListener?.("change", update);
+
+    // Best-effort orientation lock — only meaningful on touch devices.
     const orientation = (screen as unknown as { orientation?: ScreenOrientation })
       .orientation;
     const anyOrientation = orientation as unknown as {
@@ -27,14 +35,15 @@ export function useLandscapeLock() {
       unlock?: () => void;
     } | undefined;
 
-    if (anyOrientation?.lock) {
+    if (touchMql.matches && anyOrientation?.lock) {
       anyOrientation.lock("landscape").catch(() => {
         // Ignored — many browsers require fullscreen first or simply don't support it.
       });
     }
 
     return () => {
-      mql.removeEventListener?.("change", onChange);
+      orientationMql.removeEventListener?.("change", update);
+      touchMql.removeEventListener?.("change", update);
       try {
         anyOrientation?.unlock?.();
       } catch {

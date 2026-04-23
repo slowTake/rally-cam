@@ -38,6 +38,7 @@ export function useRecorder() {
   const [status, setStatus] = useState<RecorderStatus>("idle");
   const [error, setError] = useState<string | null>(null);
   const [elapsedMs, setElapsedMs] = useState(0);
+  const [facingMode, setFacingMode] = useState<"user" | "environment" | "unknown">("unknown");
 
   // Acquire camera on mount.
   useEffect(() => {
@@ -68,6 +69,11 @@ export function useRecorder() {
           return;
         }
         streamRef.current = stream;
+        const track = stream.getVideoTracks()[0];
+        const settings = track?.getSettings?.() as { facingMode?: string } | undefined;
+        if (settings?.facingMode === "user") setFacingMode("user");
+        else if (settings?.facingMode === "environment") setFacingMode("environment");
+        else setFacingMode("unknown");
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
           videoRef.current.play().catch(() => {
@@ -171,5 +177,5 @@ export function useRecorder() {
     });
   }, []);
 
-  return { status, error, elapsedMs, videoRef, start, stop };
+  return { status, error, elapsedMs, videoRef, start, stop, facingMode };
 }
