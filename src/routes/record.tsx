@@ -117,10 +117,27 @@ function RecordPage() {
 
       {/* Loading */}
       {status === "loading" && (
-        <div className="absolute inset-0 flex items-center justify-center z-20 bg-black/80">
-          <div className="text-center space-y-3">
-            <div className="h-8 w-8 mx-auto rounded-full border-2 border-white/20 border-t-white animate-spin" />
-            <p className="text-sm text-white/70">Starting camera…</p>
+        <div className="absolute inset-0 flex items-center justify-center z-20 bg-black/90 px-6">
+          <div className="max-w-sm w-full text-center space-y-5">
+            <div className="space-y-2">
+              <h2 className="text-xl font-semibold">Camera access needed</h2>
+              <p className="text-sm text-white/70">
+                Your browser will ask for permission to use the camera and microphone. Nothing is
+                uploaded — clips stay on your device.
+              </p>
+            </div>
+            <div className="flex flex-col items-center gap-2 pt-2">
+              <div className="h-8 w-8 rounded-full border-2 border-white/20 border-t-white animate-spin" />
+              <p className="text-xs text-white/60">Waiting for permission…</p>
+            </div>
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <Link to="/">
+                <Button variant="secondary" size="sm">Back to home</Button>
+              </Link>
+              <Link to="/gallery">
+                <Button variant="secondary" size="sm">Gallery</Button>
+              </Link>
+            </div>
           </div>
         </div>
       )}
@@ -128,12 +145,21 @@ function RecordPage() {
       {/* Permission denied */}
       {status === "denied" && (
         <div className="absolute inset-0 flex items-center justify-center z-20 bg-black/90 px-6">
-          <div className="max-w-sm text-center space-y-4">
+          <div className="max-w-sm w-full text-center space-y-4">
             <h2 className="text-xl font-semibold">Camera access blocked</h2>
             <p className="text-sm text-white/70">
-              Please allow camera access in your browser settings, then try again.
+              Please allow camera access to record a match.
             </p>
-            <Button onClick={() => window.location.reload()}>Try again</Button>
+            <p className="text-xs text-white/60">
+              To enable: tap the lock/info icon in your browser's address bar → Site settings →
+              allow Camera, then reload.
+            </p>
+            <div className="flex items-center justify-center gap-2 pt-1">
+              <Button onClick={() => window.location.reload()}>Try again</Button>
+              <Link to="/gallery">
+                <Button variant="secondary">Open Gallery</Button>
+              </Link>
+            </div>
             <div>
               <Link to="/" className="text-sm text-white/60 underline">
                 Back to home
@@ -146,14 +172,19 @@ function RecordPage() {
       {/* Unsupported */}
       {status === "unsupported" && (
         <div className="absolute inset-0 flex items-center justify-center z-20 bg-black/90 px-6">
-          <div className="max-w-sm text-center space-y-4">
+          <div className="max-w-sm w-full text-center space-y-4">
             <h2 className="text-xl font-semibold">Camera not available</h2>
             <p className="text-sm text-white/70">
               {error ?? "Your browser or device doesn't support recording."}
             </p>
-            <Link to="/">
-              <Button variant="secondary">Back to home</Button>
-            </Link>
+            <div className="flex items-center justify-center gap-2 pt-1">
+              <Link to="/">
+                <Button variant="secondary">Back to home</Button>
+              </Link>
+              <Link to="/gallery">
+                <Button variant="secondary">Gallery</Button>
+              </Link>
+            </div>
           </div>
         </div>
       )}
