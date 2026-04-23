@@ -128,16 +128,12 @@ function GalleryPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6">
-        <div className="flex items-center justify-between mb-6">
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Home
-          </Link>
-          <Link to="/record">
-            <Button size="sm">New recording</Button>
+        <div className="mb-6">
+          <Link to="/">
+            <Button variant="default" size="sm" className="gap-2">
+              <ArrowLeft className="h-4 w-4" />
+              Back to home
+            </Button>
           </Link>
         </div>
 
