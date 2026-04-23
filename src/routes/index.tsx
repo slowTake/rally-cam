@@ -20,6 +20,32 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+function DropI({ delay = 0 }: { delay?: number }) {
+  return (
+    <span className="relative inline-block align-baseline">
+      <span aria-hidden className="invisible">i</span>
+      {/* stem */}
+      <span
+        aria-hidden
+        className="absolute left-0 right-0 bottom-0"
+        style={{ height: "0.62em", background: "currentColor" }}
+      />
+      {/* dot drops in */}
+      <span
+        aria-hidden
+        className="absolute left-1/2 -translate-x-1/2 rounded-full"
+        style={{
+          width: "0.18em",
+          height: "0.18em",
+          background: "currentColor",
+          top: "0.04em",
+          animation: `drop-i 0.9s cubic-bezier(0.5,1.6,0.4,1) ${delay}s both`,
+        }}
+      />
+    </span>
+  );
+}
+
 function Index() {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center px-6">
