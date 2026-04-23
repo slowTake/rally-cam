@@ -149,20 +149,3 @@
   }
 }
 
-@keyframes drop-i {
-  0% {
-    transform: translate(-50%, -1.4em);
-    opacity: 0;
-  }
-  60% {
-    transform: translate(-50%, 0.1em);
-    opacity: 1;
-  }
-  80% {
-    transform: translate(-50%, -0.05em);
-  }
-  100% {
-    transform: translate(-50%, 0);
-    opacity: 1;
-  }
-}
