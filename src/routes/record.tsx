@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, RotateCw } from "lucide-react";
+import { ArrowLeft, Images, RotateCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRecorder } from "@/hooks/use-recorder";
 import { useLandscapeLock } from "@/hooks/use-landscape-lock";
@@ -64,15 +64,27 @@ function RecordPage() {
         >
           <ArrowLeft className="h-5 w-5" />
         </Link>
-        <div
-          className={`px-3 py-1 rounded-full text-sm font-mono tabular-nums ${
-            recording ? "bg-destructive text-destructive-foreground" : "bg-black/40"
-          }`}
-        >
-          {recording && (
-            <span className="inline-block h-2 w-2 rounded-full bg-destructive-foreground mr-2 animate-pulse" />
+        <div className="flex items-center gap-2">
+          <div
+            className={`px-3 py-1 rounded-full text-sm font-mono tabular-nums ${
+              recording ? "bg-destructive text-destructive-foreground" : "bg-black/40"
+            }`}
+          >
+            {recording && (
+              <span className="inline-block h-2 w-2 rounded-full bg-destructive-foreground mr-2 animate-pulse" />
+            )}
+            {formatElapsed(elapsedMs)}
+          </div>
+          {!recording && (
+            <Link
+              to="/gallery"
+              className="inline-flex items-center gap-1.5 h-10 px-3 rounded-full bg-black/40 hover:bg-black/60 transition-colors text-sm"
+              aria-label="Open gallery"
+            >
+              <Images className="h-4 w-4" />
+              <span>Gallery</span>
+            </Link>
           )}
-          {formatElapsed(elapsedMs)}
         </div>
       </div>
 
