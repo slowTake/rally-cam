@@ -23,7 +23,7 @@ function Index() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-background text-foreground flex flex-col items-center justify-center px-6">
       <img
-        src="/background.gif"
+        src="https://media1.tenor.com/m/LqNPvLVdzHoAAAAC/cat-ping.gif"
         alt=""
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 w-full h-full object-cover -z-20"
