@@ -25,30 +25,32 @@ function Index() {
     <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center px-6">
       <div className="max-w-md w-full text-center space-y-8">
         <div className="space-y-3">
-          <h1 className="section-heading text-4xl sm:text-5xl tracking-tight">
+          <h1
+            className="section-heading text-4xl sm:text-5xl tracking-tight fade-up"
+            style={{ animationDelay: "0s" }}
+          >
             Ping Pong
             <br />
             Highlights
           </h1>
-          <p className="text-muted-foreground text-lg">
+          <p
+            className="text-muted-foreground text-lg fade-up"
+            style={{ animationDelay: "0.2s" }}
+          >
             Record a match, get rally highlights.
           </p>
         </div>
 
         <div className="space-y-3">
-          <Link to="/record" className="inline-block w-full">
-            <Button size="lg" className="w-full h-14 text-base">
-              Start Recording
-            </Button>
+          <Link to="/record" className="inline-block w-full fade-up" style={{ animationDelay: "0.4s" }}>
+            <button type="button" className="start-btn" data-label="START RECORDING" aria-label="Start Recording" />
           </Link>
-          <Link to="/gallery" className="inline-block w-full">
-            <Button variant="secondary" size="lg" className="w-full h-12 text-base">
-              View Gallery
-            </Button>
+          <Link to="/gallery" className="inline-block w-full fade-up" style={{ animationDelay: "0.55s" }}>
+            <button type="button" className="gallery-btn" data-label="VIEW GALLERY" aria-label="View Gallery" />
           </Link>
         </div>
 
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-muted-foreground fade-up" style={{ animationDelay: "0.7s" }}>
           Tip: turn your phone sideways for best results.
         </p>
       </div>
