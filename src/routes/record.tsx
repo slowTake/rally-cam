@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useRecorder } from "@/hooks/use-recorder";
 import { useLandscapeLock } from "@/hooks/use-landscape-lock";
 import { setRecording } from "@/lib/recording-store";
+import { saveClip } from "@/lib/clips-store";
 
 export const Route = createFileRoute("/record")({
   head: () => ({
@@ -36,6 +37,7 @@ function RecordPage() {
       const blob = await stop();
       if (blob && blob.size > 0) {
         setRecording(blob);
+        await saveClip({ blob, durationMs: elapsedMs });
         navigate({ to: "/review" });
       }
     }
