@@ -1,22 +1,51 @@
 
-## Add a background GIF to the landing page
 
-### Approach
-Render the GIF as a fixed, full-screen layer behind the landing content on `/`, with a dark overlay so the title, buttons, and tip text stay legible against the existing dark theme.
+## Add Analyze + Share to Gallery
 
-### Where the file goes
-Put the GIF at `src/assets/background.gif` (you can drop the file in via the upload button — tell me the filename and I'll wire it up). Importing from `src/assets/` lets Vite hash and bundle it. If you'd rather host it remotely, give me the URL and I'll use that string directly instead.
+### Goal
+Per-clip "Analyze" and "Share" actions on each gallery card, plus a top-level "Analyze All" button. Analyze produces a lightweight client-side summary (count, total duration, average length, total size, date range). Share uses the native Web Share API to send the actual video file to other apps, with a download fallback when sharing isn't supported.
 
-### Changes
-**`src/routes/index.tsx`** only:
-1. `import bgGif from "@/assets/background.gif";`
-2. Inside the `Index` component, before the existing centered content, add two absolutely-positioned layers inside the root `div`:
-   - `<img src={bgGif}>` — `absolute inset-0 w-full h-full object-cover -z-20` with `aria-hidden`
-   - `<div>` overlay — `absolute inset-0 bg-background/70 -z-10` to dim the GIF for contrast
-3. Add `relative overflow-hidden` to the existing root `div` so the absolute layers are clipped to the viewport.
+### Changes — `src/routes/gallery.tsx` only
 
-No changes to routing, animations, button styles, or any other route. The fade-up entrance animations and shimmer buttons stay exactly as they are.
+**1. New imports**
+- Add `Share2`, `Sparkles` from `lucide-react`.
+- Add `useState` is already imported.
+- Add `Dialog`, `DialogContent`, `DialogHeader`, `DialogTitle`, `DialogDescription` from `@/components/ui/dialog`.
+- Add `toast` from `sonner` for share/copy feedback.
+
+**2. Per-clip Share button (in `ClipCard`)**
+- New icon button next to Download/Delete using `Share2`.
+- Handler: load the clip blob, build a `File` from it (`new File([blob], filename, { type })`), then:
+  - If `navigator.canShare?.({ files: [file] })` → `navigator.share({ files: [file], title: "Ping pong clip" })`.
+  - Else fall back to triggering the existing download flow and toast: "Sharing not supported — clip downloaded instead."
+- Wrap in try/catch; ignore `AbortError` (user cancelled share sheet).
+
+**3. Per-clip Analyze button (in `ClipCard`)**
+- New icon button using `Sparkles`.
+- Opens a small dialog with this clip's stats: created date, duration, file size, MIME type, and a one-line "Tip" string chosen from duration buckets (e.g. <30s "Short rally clip", 30s–2min "Standard match clip", >2min "Long session — consider trimming").
+- This is local/heuristic only — no AI call, no upload. Keeps the gallery promise of "Saved on this device only."
+
+**4. Top-level "Analyze all" button (in `GalleryPage`)**
+- Shown only when `clips && clips.length > 0`, placed in a flex row next to the "Gallery" heading (heading on left, button on right).
+- Uses `Sparkles` icon, `variant="outline"`, `size="sm"`.
+- Opens a dialog summarizing the full library:
+  - Total clips
+  - Total duration (sum of `durationMs`, formatted `HH:MM:SS`)
+  - Total storage (sum of `size`, formatted via existing `formatSize`)
+  - Average clip length
+  - First clip date / latest clip date (from `createdAt` min/max)
+  - Same heuristic tip based on average duration.
+
+**5. State**
+- `const [analyzeOpen, setAnalyzeOpen] = useState(false)` at gallery level.
+- `const [clipAnalyzeOpen, setClipAnalyzeOpen] = useState(false)` inside `ClipCard`.
+
+### Out of scope
+- No server upload, no cloud storage, no AI Gateway call — clips stay local as the page already promises. (Happy to add a Lovable Cloud upload + AI-powered analysis as a follow-up if you want real ML insight; that's a bigger change requiring backend setup.)
+- No changes to `clips-store.ts`, recorder, or other routes.
+- No new dependencies — `Dialog`, `sonner`, and `lucide-react` icons already exist in the project.
 
 ### Notes
-- GIFs are heavy. If the file is more than ~2 MB, an MP4/WebM looping `<video autoPlay muted loop playsInline>` will look identical and load far faster — say the word and I'll use that pattern instead.
-- The `bg-background/70` overlay opacity is easy to tune (e.g. `/50` lighter, `/85` darker) once you see it in place.
+- Web Share API with files works on iOS Safari, Android Chrome, and most mobile browsers; desktop browsers mostly fall back to the download path, which is why the fallback exists.
+- If you'd rather the "Share" button always download + copy a "shareable link" instead, say the word — but real link sharing requires uploading the clip somewhere (Lovable Cloud Storage), which the current local-only design avoids.
+
