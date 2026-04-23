@@ -38,6 +38,7 @@ export function useRecorder() {
   const [status, setStatus] = useState<RecorderStatus>("idle");
   const [error, setError] = useState<string | null>(null);
   const [elapsedMs, setElapsedMs] = useState(0);
+  const [facingMode, setFacingMode] = useState<"user" | "environment" | "unknown">("unknown");
 
   // Acquire camera on mount.
   useEffect(() => {
