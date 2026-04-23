@@ -54,6 +54,13 @@ function Index() {
           <Link to="/gallery" className="inline-block w-full fade-up" style={{ animationDelay: "0.55s" }}>
             <button type="button" className="gallery-btn" data-label="VIEW GALLERY" aria-label="View Gallery" />
           </Link>
+          <Link
+            to="/track"
+            className="inline-block w-full fade-up text-sm text-foreground/80 underline underline-offset-4"
+            style={{ animationDelay: "0.65s" }}
+          >
+            Try live tracking (beta)
+          </Link>
         </div>
 
         <p className="text-sm text-foreground/80 fade-up" style={{ animationDelay: "0.7s" }}>
