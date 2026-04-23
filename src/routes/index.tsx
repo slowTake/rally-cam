@@ -40,7 +40,7 @@ function Index() {
             Highlights
           </h1>
           <p
-            className="text-muted-foreground text-lg fade-up"
+            className="text-foreground/90 text-lg fade-up"
             style={{ animationDelay: "0.2s" }}
           >
             Record a match, get rally highlights.
