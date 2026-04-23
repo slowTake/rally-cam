@@ -1,32 +1,22 @@
 
-## Add clear camera-permission prompt + denied fallback
+## Add a background GIF to the landing page
 
-### Current state
-`src/routes/record.tsx` already has minimal `loading` / `denied` / `unsupported` states, but:
-- `loading` just shows "Starting camera…" with no explanation of *why* the prompt appears or what to do.
-- `denied` only offers "Try again" (full reload) and a tiny text link back home — no clear way to reach Gallery, no guidance on how to unblock the permission per-browser.
-- The recorder hook auto-starts the camera on mount, so there's no explicit "Allow camera" CTA before the browser prompt fires — users see the system prompt with no app-side context.
+### Approach
+Render the GIF as a fixed, full-screen layer behind the landing content on `/`, with a dark overlay so the title, buttons, and tip text stay legible against the existing dark theme.
 
-### Fix (visual + UX only — no recorder logic changes)
+### Where the file goes
+Put the GIF at `src/assets/background.gif` (you can drop the file in via the upload button — tell me the filename and I'll wire it up). Importing from `src/assets/` lets Vite hash and bundle it. If you'd rather host it remotely, give me the URL and I'll use that string directly instead.
 
-**`src/routes/record.tsx` only.** Improve the three pre-record states already in the file:
+### Changes
+**`src/routes/index.tsx`** only:
+1. `import bgGif from "@/assets/background.gif";`
+2. Inside the `Index` component, before the existing centered content, add two absolutely-positioned layers inside the root `div`:
+   - `<img src={bgGif}>` — `absolute inset-0 w-full h-full object-cover -z-20` with `aria-hidden`
+   - `<div>` overlay — `absolute inset-0 bg-background/70 -z-10` to dim the GIF for contrast
+3. Add `relative overflow-hidden` to the existing root `div` so the absolute layers are clipped to the viewport.
 
-1. **Loading state** — add a clear, friendly explainer above the spinner:
-   - Heading: "Camera access needed"
-   - Body: "Your browser will ask for permission to use the camera and microphone. Nothing is uploaded — clips stay on your device."
-   - Keep the spinner + "Waiting for permission…" label.
-   - Add a secondary "Back to home" link and a "Gallery" link so users are never trapped.
+No changes to routing, animations, button styles, or any other route. The fade-up entrance animations and shimmer buttons stay exactly as they are.
 
-2. **Denied state** — expand the existing block:
-   - Heading stays "Camera access blocked".
-   - Add a short, generic how-to: "To enable: tap the lock/info icon in your browser's address bar → Site settings → allow Camera, then reload."
-   - Buttons row: primary "Try again" (reload), secondary "Open Gallery" (`/gallery`), tertiary text link "Back to home" (`/`).
-
-3. **Unsupported state** — keep current copy, but also add a "Gallery" button next to "Back to home" so the user can still browse saved clips on a device without a camera.
-
-All three overlays sit above the video element with `z-20` (already the case) and use the existing token classes (`bg-background`, `text-foreground`, `Button` variants, `text-muted-foreground`). No new tokens, no new components, no changes to `useRecorder`, routing, or the recorder lifecycle.
-
-### Out of scope
-- No changes to `use-recorder.ts` (permission flow, auto-start behavior).
-- No new pre-prompt "Allow camera" gate screen — adding one would change the recorder lifecycle (it currently auto-starts on mount), which the user said not to touch. The improved loading copy already explains the prompt before it appears in practice on most browsers, and the denied state now has full fallback navigation.
-- No changes to landing, gallery, or review pages.
+### Notes
+- GIFs are heavy. If the file is more than ~2 MB, an MP4/WebM looping `<video autoPlay muted loop playsInline>` will look identical and load far faster — say the word and I'll use that pattern instead.
+- The `bg-background/70` overlay opacity is easy to tune (e.g. `/50` lighter, `/85` darker) once you see it in place.
