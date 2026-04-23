@@ -1,23 +1,35 @@
 
-## Add Gallery Navigation + Confirm Local Storage
+## Fix: Auto-save clips to Gallery on stop
 
-### Current state
-- Landing page (`/`) already has a "View Gallery" button — no change needed.
-- Recording page (`/record`) has no link to the gallery.
-- Storage is already 100% local-on-device via **IndexedDB** (`src/lib/clips-store.ts`). IndexedDB is the correct local browser storage for video Blobs (regular `localStorage` only holds ~5MB of strings and can't store Blobs efficiently — videos would not fit). Nothing leaves the device.
+### The bug
+After stopping a recording, the blob is only kept in **memory** (`setRecording` in `src/lib/recording-store.ts`) — it's never written to **IndexedDB** (`saveClip` in `src/lib/clips-store.ts`). That's why the Gallery is empty: nothing ever gets persisted. The "Download" button on `/review` just exports the in-memory blob; it doesn't save to the gallery either. The footer text on `/review` ("also visible in your Gallery") is currently a lie.
 
-### Changes
+### Fix
 
-**1. `src/routes/record.tsx` — add a Gallery button to the camera screen**
-- Add a small icon+label button in the **top bar**, opposite the existing back arrow, that links to `/gallery`. Uses the `Images` icon from lucide-react, styled to match the existing top-bar back button (`bg-black/40` pill, white icon).
-- Visible in both `ready` (before recording) and after recording finishes — but **hidden while `recording === true`** so it can't be tapped mid-record by accident.
-- The post-recording navigation already routes to `/review`, which has its own "Gallery" link, so users always have a path to the gallery from every state.
+**`src/routes/record.tsx` — persist on stop**
 
-**2. Storage clarification (no code change)**
-- Keep using the existing IndexedDB store (`clips-store.ts`). It persists across sessions, stays on-device, and handles video Blobs correctly.
-- No switch to `localStorage` — it's the wrong primitive for video data.
+In `handleToggle`, after `stop()` returns the blob, also call `saveClip` so the recording is written to IndexedDB before navigating to `/review`:
+
+```ts
+const blob = await stop();
+if (blob && blob.size > 0) {
+  setRecording(blob);
+  await saveClip({ blob, durationMs: elapsedMs }); // NEW
+  navigate({ to: "/review" });
+}
+```
+
+Add the import: `import { saveClip } from "@/lib/clips-store";`
+
+That's it. After this change:
+- Every stopped recording auto-appears in `/gallery`.
+- Download is still optional (it's just a way to export off-device).
+- No other files change. Existing IndexedDB store, gallery UI, and review screen all keep working as-is.
+
+### Why no schema/UI change
+- `saveClip` already accepts `{ blob, durationMs }` and the recorder already exposes `elapsedMs`.
+- Gallery already lists clips from IndexedDB, so once we save, they show up automatically.
 
 ### Out of scope
-- No changes to landing page (button already exists).
-- No changes to gallery, review, or recording logic.
-- No new storage layer.
+- Retroactively saving clips that were recorded before this fix (those blobs are gone).
+- De-duplicating if the user navigates back to `/record` and stops again (each stop = one new clip, which is the intended behavior).
