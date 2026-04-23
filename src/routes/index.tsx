@@ -21,34 +21,14 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const DropI = ({ delay = 0 }: { delay?: number }) => (
-    <span className="relative inline-block align-baseline">
-      <span aria-hidden className="invisible">i</span>
-      <span
-        aria-hidden
-        className="absolute left-0 right-0 bottom-0"
-        style={{ height: "0.62em", background: "currentColor" }}
-      />
-      <span
-        aria-hidden
-        className="absolute left-1/2 -translate-x-1/2 rounded-full"
-        style={{
-          width: "0.18em",
-          height: "0.18em",
-          background: "currentColor",
-          top: "0.04em",
-          animation: `drop-i 0.9s cubic-bezier(0.5,1.6,0.4,1) ${delay}s both`,
-        }}
-      />
-    </span>
-  );
-
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center px-6">
       <div className="max-w-md w-full text-center space-y-8">
         <div className="space-y-3">
-          <h1 className="section-heading text-4xl sm:text-5xl tracking-tight normal-case">
-            P<DropI />NG PONG H<DropI delay={0.15} />GHL<DropI delay={0.3} />GHTS
+          <h1 className="section-heading text-4xl sm:text-5xl tracking-tight">
+            Ping Pong
+            <br />
+            Highlights
           </h1>
           <p className="text-muted-foreground text-lg">
             Record a match, get rally highlights.
