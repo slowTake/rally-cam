@@ -69,11 +69,12 @@ function RecordPage() {
         <div className="flex items-center gap-2">
           <div
             className={`px-3 py-1 rounded-full text-sm font-mono tabular-nums ${
-              recording ? "bg-destructive text-destructive-foreground" : "bg-black/40"
+              recording ? "text-white" : "bg-black/40"
             }`}
+            style={recording ? { backgroundColor: "#ff2d2d" } : undefined}
           >
             {recording && (
-              <span className="inline-block h-2 w-2 rounded-full bg-destructive-foreground mr-2 animate-pulse" />
+              <span className="inline-block h-2 w-2 rounded-full bg-white mr-2 animate-pulse" />
             )}
             {formatElapsed(elapsedMs)}
           </div>
@@ -99,14 +100,16 @@ function RecordPage() {
             className="relative h-20 w-20 rounded-full bg-white/10 backdrop-blur-sm border-4 border-white flex items-center justify-center active:scale-95 transition-transform"
           >
             {recording && (
-              <span className="absolute inset-0 rounded-full border-4 border-destructive animate-ping" />
+              <span
+                className="absolute inset-0 rounded-full border-4 animate-ping"
+                style={{ borderColor: "#ff2d2d" }}
+              />
             )}
             <span
               className={
-                recording
-                  ? "h-7 w-7 rounded-md bg-destructive"
-                  : "h-14 w-14 rounded-full bg-destructive"
+                recording ? "h-7 w-7 rounded-md" : "h-14 w-14 rounded-full"
               }
+              style={{ backgroundColor: "#ff2d2d" }}
             />
           </button>
         </div>
