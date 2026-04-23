@@ -33,11 +33,18 @@ function Index() {
           </p>
         </div>
 
-        <Link to="/record" className="inline-block w-full">
-          <Button size="lg" className="w-full h-14 text-base">
-            Start Recording
-          </Button>
-        </Link>
+        <div className="space-y-3">
+          <Link to="/record" className="inline-block w-full">
+            <Button size="lg" className="w-full h-14 text-base">
+              Start Recording
+            </Button>
+          </Link>
+          <Link to="/gallery" className="inline-block w-full">
+            <Button variant="secondary" size="lg" className="w-full h-12 text-base">
+              View Gallery
+            </Button>
+          </Link>
+        </div>
 
         <p className="text-sm text-muted-foreground">
           Tip: turn your phone sideways for best results.
