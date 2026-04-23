@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Download } from "lucide-react";
+import { ArrowLeft, Download, Images } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { clearRecording, getRecording } from "@/lib/recording-store";
 
@@ -32,10 +32,7 @@ function ReviewPage() {
     const { blob, url } = getRecording();
     if (!blob || !url) return;
     const ext = blob.type.includes("mp4") ? "mp4" : "webm";
-    const ts = new Date()
-      .toISOString()
-      .replace(/[:.]/g, "-")
-      .slice(0, 19);
+    const ts = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
     const a = document.createElement("a");
     a.href = url;
     a.download = `pingpong-match-${ts}.${ext}`;
@@ -57,8 +54,8 @@ function ReviewPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col overflow-y-auto">
-      <div className="flex items-center justify-between p-4 shrink-0">
+    <div className="fixed inset-0 bg-black text-white flex flex-col">
+      <div className="flex items-center justify-between p-3 shrink-0">
         <Link
           to="/"
           className="inline-flex items-center gap-2 text-sm text-white/80 hover:text-white"
@@ -67,32 +64,40 @@ function ReviewPage() {
           Home
         </Link>
         <h1 className="text-sm font-medium text-white/80">Review</h1>
-        <div className="w-12" />
+        <Link
+          to="/gallery"
+          className="inline-flex items-center gap-1 text-sm text-white/80 hover:text-white"
+        >
+          <Images className="h-4 w-4" />
+          Gallery
+        </Link>
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center p-4 gap-3 min-h-0">
+      <div className="flex-1 min-h-0 flex items-center justify-center px-3">
         <video
           src={url}
           controls
           playsInline
-          className="w-auto max-w-full max-h-[55vh] sm:max-h-[65vh] rounded-lg bg-black"
+          className="max-w-full max-h-full rounded-lg bg-black"
         />
-        <p className="text-xs text-white/60 text-center max-w-md">
-          Saved in this browser tab only — download to keep it.
-        </p>
       </div>
 
-      <div className="p-4 pb-[max(1rem,env(safe-area-inset-bottom))] flex items-center justify-center gap-3 flex-wrap shrink-0">
-        <Button variant="secondary" onClick={handleRetake}>
-          Retake
-        </Button>
-        <Button variant="secondary" onClick={handleDownload}>
-          <Download className="h-4 w-4 mr-2" />
-          Download
-        </Button>
-        <Button disabled title="Coming soon">
-          Analyze
-        </Button>
+      <div className="shrink-0 px-3 pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] flex flex-col items-center gap-2">
+        <div className="flex items-center justify-center gap-2 flex-wrap">
+          <Button variant="secondary" size="sm" onClick={handleRetake}>
+            Retake
+          </Button>
+          <Button variant="secondary" size="sm" onClick={handleDownload}>
+            <Download className="h-4 w-4 mr-2" />
+            Download
+          </Button>
+          <Button size="sm" disabled title="Coming soon">
+            Analyze
+          </Button>
+        </div>
+        <p className="text-[11px] text-white/50 text-center">
+          Saved on this device — also visible in your Gallery.
+        </p>
       </div>
     </div>
   );
