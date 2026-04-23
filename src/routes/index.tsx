@@ -25,8 +25,8 @@ function Index() {
     <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center px-6">
       <div className="max-w-md w-full text-center space-y-8">
         <div className="space-y-3">
-          <h1 className="section-heading text-4xl sm:text-5xl tracking-tight">
-            Ping Pong Highlights
+          <h1 className="section-heading text-4xl sm:text-5xl tracking-tight normal-case">
+            P<DropI />NG PONG H<DropI delay={0.15} />GHL<DropI delay={0.3} />GHTS
           </h1>
           <p className="text-muted-foreground text-lg">
             Record a match, get rally highlights.
