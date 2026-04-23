@@ -69,6 +69,11 @@ export function useRecorder() {
           return;
         }
         streamRef.current = stream;
+        const track = stream.getVideoTracks()[0];
+        const settings = track?.getSettings?.() as { facingMode?: string } | undefined;
+        if (settings?.facingMode === "user") setFacingMode("user");
+        else if (settings?.facingMode === "environment") setFacingMode("environment");
+        else setFacingMode("unknown");
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
           videoRef.current.play().catch(() => {
