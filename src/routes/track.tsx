@@ -132,7 +132,6 @@ function TrackPage() {
       <img
         ref={imgRef}
         src={STREAM_URL}
-        crossOrigin="anonymous"
         className="absolute inset-0 w-full h-full object-contain"
         alt="Live Ping Pong Track"
       />
