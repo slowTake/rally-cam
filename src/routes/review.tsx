@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { clearRecording, getRecording } from "@/lib/recording-store";
 
@@ -26,6 +26,22 @@ function ReviewPage() {
   const handleRetake = () => {
     clearRecording();
     navigate({ to: "/record" });
+  };
+
+  const handleDownload = () => {
+    const { blob, url } = getRecording();
+    if (!blob || !url) return;
+    const ext = blob.type.includes("mp4") ? "mp4" : "webm";
+    const ts = new Date()
+      .toISOString()
+      .replace(/[:.]/g, "-")
+      .slice(0, 19);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `pingpong-match-${ts}.${ext}`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   };
 
   if (!url) {
@@ -54,18 +70,25 @@ function ReviewPage() {
         <div className="w-12" />
       </div>
 
-      <div className="flex-1 flex items-center justify-center p-4">
+      <div className="flex-1 flex flex-col items-center justify-center p-4 gap-3">
         <video
           src={url}
           controls
           playsInline
           className="max-w-full max-h-[70vh] rounded-lg bg-black"
         />
+        <p className="text-xs text-white/60 text-center max-w-md">
+          Saved in this browser tab only — download to keep it.
+        </p>
       </div>
 
-      <div className="p-4 flex items-center justify-center gap-3">
+      <div className="p-4 flex items-center justify-center gap-3 flex-wrap">
         <Button variant="secondary" onClick={handleRetake}>
           Retake
+        </Button>
+        <Button variant="secondary" onClick={handleDownload}>
+          <Download className="h-4 w-4 mr-2" />
+          Download
         </Button>
         <Button disabled title="Coming soon">
           Analyze
