@@ -177,5 +177,5 @@ export function useRecorder() {
     });
   }, []);
 
-  return { status, error, elapsedMs, videoRef, start, stop };
+  return { status, error, elapsedMs, videoRef, start, stop, facingMode };
 }
