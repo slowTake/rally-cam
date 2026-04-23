@@ -56,7 +56,7 @@ function Index() {
           </Link>
         </div>
 
-        <p className="text-sm text-muted-foreground fade-up" style={{ animationDelay: "0.7s" }}>
+        <p className="text-sm text-foreground/80 fade-up" style={{ animationDelay: "0.7s" }}>
           Tip: turn your phone sideways for best results.
         </p>
       </div>
