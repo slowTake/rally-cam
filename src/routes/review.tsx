@@ -57,8 +57,8 @@ function ReviewPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col">
-      <div className="flex items-center justify-between p-4">
+    <div className="min-h-screen bg-black text-white flex flex-col overflow-y-auto">
+      <div className="flex items-center justify-between p-4 shrink-0">
         <Link
           to="/"
           className="inline-flex items-center gap-2 text-sm text-white/80 hover:text-white"
@@ -70,19 +70,19 @@ function ReviewPage() {
         <div className="w-12" />
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center p-4 gap-3">
+      <div className="flex-1 flex flex-col items-center justify-center p-4 gap-3 min-h-0">
         <video
           src={url}
           controls
           playsInline
-          className="max-w-full max-h-[70vh] rounded-lg bg-black"
+          className="w-auto max-w-full max-h-[55vh] sm:max-h-[65vh] rounded-lg bg-black"
         />
         <p className="text-xs text-white/60 text-center max-w-md">
           Saved in this browser tab only — download to keep it.
         </p>
       </div>
 
-      <div className="p-4 flex items-center justify-center gap-3 flex-wrap">
+      <div className="p-4 pb-[max(1rem,env(safe-area-inset-bottom))] flex items-center justify-center gap-3 flex-wrap shrink-0">
         <Button variant="secondary" onClick={handleRetake}>
           Retake
         </Button>
