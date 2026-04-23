@@ -26,7 +26,7 @@ function formatElapsed(ms: number) {
 
 function RecordPage() {
   const { isPortrait } = useLandscapeLock();
-  const { status, error, elapsedMs, videoRef, start, stop } = useRecorder();
+  const { status, error, elapsedMs, videoRef, start, stop, facingMode } = useRecorder();
   const navigate = useNavigate();
 
   const handleToggle = async () => {
@@ -42,13 +42,14 @@ function RecordPage() {
   };
 
   const recording = status === "recording";
+  const mirrored = facingMode === "user";
 
   return (
     <div className="fixed inset-0 bg-black text-white overflow-hidden">
       {/* Live preview */}
       <video
         ref={videoRef}
-        className="absolute inset-0 w-full h-full object-cover"
+        className={`absolute inset-0 w-full h-full object-contain ${mirrored ? "-scale-x-100" : ""}`}
         muted
         playsInline
         autoPlay
