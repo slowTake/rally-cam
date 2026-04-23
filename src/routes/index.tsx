@@ -40,7 +40,7 @@ function Index() {
             Highlights
           </h1>
           <p
-            className="text-muted-foreground text-lg fade-up"
+            className="text-foreground/90 text-lg fade-up"
             style={{ animationDelay: "0.2s" }}
           >
             Record a match, get rally highlights.
@@ -56,7 +56,7 @@ function Index() {
           </Link>
         </div>
 
-        <p className="text-sm text-muted-foreground fade-up" style={{ animationDelay: "0.7s" }}>
+        <p className="text-sm text-foreground/80 fade-up" style={{ animationDelay: "0.7s" }}>
           Tip: turn your phone sideways for best results.
         </p>
       </div>
