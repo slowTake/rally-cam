@@ -21,8 +21,15 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center px-6">
-      <div className="max-w-md w-full text-center space-y-8">
+    <div className="relative min-h-screen overflow-hidden bg-background text-foreground flex flex-col items-center justify-center px-6">
+      <img
+        src="/background.gif"
+        alt=""
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 w-full h-full object-cover -z-20"
+      />
+      <div className="pointer-events-none absolute inset-0 bg-background/70 -z-10" />
+      <div className="max-w-md w-full text-center space-y-8 relative z-10">
         <div className="space-y-3">
           <h1
             className="section-heading text-4xl sm:text-5xl tracking-tight fade-up"
