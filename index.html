@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="description" content="Record a ping pong match from your phone and get rally highlights automatically." />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Ping Pong Highlights</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/index.css" />
+</head>
+<body>
+  <!-- ======================== LOADING OVERLAY ======================== -->
+  <div id="loading-overlay">
+    <div class="loader-content">
+      <div class="loader-spinner"></div>
+      <p class="loader-text">Connecting to detection server…</p>
+    </div>
+  </div>
+
+  <!-- ======================== HOME VIEW ======================== -->
+  <section id="view-home" class="view active">
+    <img
+      src="https://media1.tenor.com/m/LqNPvLVdzHoAAAAC/cat-ping.gif"
+      alt=""
+      aria-hidden="true"
+      class="home-bg"
+    />
+    <div class="home-overlay"></div>
+
+    <div class="home-content">
+      <div class="fade-up" style="animation-delay: 0s">
+        <h1 class="section-heading home-title">
+          Ping Pong<br />Highlights
+        </h1>
+        <p class="home-subtitle">Record a match, get rally highlights.</p>
+      </div>
+
+      <div class="home-actions">
+        <div class="fade-up" style="animation-delay: 0.4s">
+          <button id="btn-start-recording" type="button" class="start-btn" data-label="START RECORDING" aria-label="Start Recording"></button>
+        </div>
+        <div class="fade-up" style="animation-delay: 0.55s">
+          <button id="btn-view-gallery" type="button" class="gallery-btn" data-label="VIEW GALLERY" aria-label="View Gallery"></button>
+        </div>
+      </div>
+
+      <p class="home-tip fade-up" style="animation-delay: 0.7s">
+        Tip: turn your phone sideways for best results.
+      </p>
+    </div>
+  </section>
+
+  <!-- ======================== RECORD VIEW ======================== -->
+  <section id="view-record" class="view">
+    <!-- Camera feed -->
+    <div class="camera-wrapper" id="camera-wrapper">
+      <video id="camera-video" autoplay playsinline muted></video>
+      <canvas id="detection-canvas"></canvas>
+
+      <!-- Top bar -->
+      <div class="record-top-bar">
+        <button id="btn-back-home" class="top-bar-btn" title="Back" aria-label="Back">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+        </button>
+
+        <div class="top-bar-right">
+          <div class="hud-pill" id="hud-status">
+            <span class="hud-dot idle"></span>
+            <span class="hud-label">Waiting…</span>
+          </div>
+          <div class="hud-fps" id="hud-fps">
+            <span class="hud-label">-- fps</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recording indicator -->
+      <div class="recording-badge hidden" id="recording-badge">
+        <span class="rec-dot"></span>
+        REC
+      </div>
+
+      <!-- Portrait warning -->
+      <div class="portrait-warning" id="portrait-warning">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M7.5 3.5h9a4 4 0 014 4v9a4 4 0 01-4 4h-9a4 4 0 01-4-4v-9a4 4 0 014-4z"/>
+          <path d="M12 8v4l2.5 1.5"/>
+          <path d="M2 12l2-2m0 0l2 2m-2-2v6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <p>Rotate your device to landscape</p>
+      </div>
+
+      <!-- Learning countdown overlay -->
+      <div class="learning-overlay hidden" id="learning-overlay">
+        <div class="learning-content">
+          <div class="learning-ring-container">
+            <svg class="learning-ring" viewBox="0 0 120 120">
+              <circle class="learning-ring-bg" cx="60" cy="60" r="52" />
+              <circle class="learning-ring-progress" id="learning-ring-progress" cx="60" cy="60" r="52" />
+            </svg>
+            <span class="learning-countdown" id="learning-countdown">…</span>
+          </div>
+          <p class="learning-label">Warming up model</p>
+          <p class="learning-hint">Filling 3-frame buffer for detection</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom controls -->
+    <div class="record-bottom">
+      <div class="clips-counter" id="clips-counter">
+        <span class="count" id="clips-count">0</span>
+        <span>clips</span>
+      </div>
+      <button id="btn-toggle-session" class="record-btn" title="Start Session" aria-label="Start Session">
+        <div class="record-btn-inner" id="record-btn-inner"></div>
+      </button>
+      <div style="min-width:44px"></div><!-- spacer for centering -->
+    </div>
+
+    <!-- Toast -->
+    <div class="toast hidden" id="clip-toast">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="toast-icon">
+        <path d="M20 6L9 17l-5-5"/>
+      </svg>
+      <span>Clip saved!</span>
+    </div>
+  </section>
+
+  <!-- ======================== GALLERY VIEW ======================== -->
+  <section id="view-gallery" class="view">
+    <div class="gallery-container">
+      <!-- Back button -->
+      <div class="gallery-nav">
+        <button id="btn-gallery-back" class="gallery-back-btn" aria-label="Back to home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          Back to home
+        </button>
+      </div>
+
+      <!-- Title row -->
+      <div class="gallery-header-row">
+        <h1 class="section-heading gallery-title">Gallery</h1>
+        <button id="btn-delete-all" class="delete-all-btn" style="display:none;" aria-label="Delete all clips">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+          </svg>
+          Delete all
+        </button>
+      </div>
+      <p class="gallery-subtitle" id="gallery-count">Saved on this device only.</p>
+
+      <!-- Clip grid -->
+      <div class="gallery-grid" id="gallery-grid"></div>
+
+      <!-- Empty state -->
+      <div class="gallery-empty hidden" id="gallery-empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <polygon points="5 3 19 12 5 21 5 3"/>
+        </svg>
+        <h2>No clips yet</h2>
+        <p>Record your first match to see it here.</p>
+        <button id="btn-empty-record" class="gallery-empty-btn">Start recording</button>
+      </div>
+    </div>
+
+    <!-- Playback modal -->
+    <div class="modal-overlay hidden" id="playback-modal">
+      <div class="modal-content">
+        <button id="btn-close-modal" class="modal-close" title="Close" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+        </button>
+        <video id="playback-video" controls playsinline></video>
+        <div class="modal-meta">
+          <span id="modal-date"></span>
+          <span id="modal-duration"></span>
+        </div>
+        <div class="modal-actions">
+          <button id="btn-download-clip" class="modal-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+            </svg>
+            Download
+          </button>
+          <button id="btn-delete-clip" class="modal-btn danger">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+            </svg>
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hidden canvas for processing -->
+  <canvas id="process-canvas" style="display:none;"></canvas>
+
+  <!-- App modules -->
+  <script type="module" src="/src/app.js"></script>
+</body>
+</html>
