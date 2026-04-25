@@ -18,14 +18,19 @@ if [ ! -f "$CHECKPOINT" ]; then
     exit 1
 fi
 
-# Check venv exists
-if [ ! -f "${VENV_DIR}/bin/python3" ]; then
-    echo "✗ Virtual environment not found. Run: python3 -m venv .venv && .venv/bin/python3 -m pip install -r requirements.txt"
+# Check if an environment is already active, otherwise check for .venv
+if [ -n "$VIRTUAL_ENV" ]; then
+    echo "✓ Using active virtual environment from: $VIRTUAL_ENV"
+    PYTHON="python3"
+elif [ -f "${VENV_DIR}/bin/python3" ]; then
+    echo "✓ Local virtual environment (.venv) found"
+    PYTHON="${VENV_DIR}/bin/python3"
+else
+    echo "✗ Virtual environment not found."
+    echo "  Either source an existing environment, or run:"
+    echo "  python3 -m venv .venv && .venv/bin/python3 -m pip install -r requirements.txt"
     exit 1
 fi
-echo "✓ Virtual environment found"
-
-PYTHON="${VENV_DIR}/bin/python3"
 
 # Start detection server
 echo "▶ Starting detection server..."
